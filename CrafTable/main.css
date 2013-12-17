@@ -1,0 +1,55 @@
+.row {
+    text-align: center;
+}
+.panel-footer {
+    text-align: right;
+}
+.dropdown-menu {
+    text-align: left;
+}
+div.slot {
+    width: 64px;
+    height: 64px;
+}
+div.item {
+    position: relative;
+    margin: 3px;
+    width: 48px;
+    height: 48px;
+    border: 1px solid black;
+}
+div.item:not([data-stack="1"]):after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 5px;
+    content: attr(data-stack);
+    color: white;
+}
+div.arrowDown {
+    margin: 3px auto 5px;
+    width: 62px;
+    height: 62px;
+    background-image: url("down.png");
+}
+div.item[data-item="Wood"] {
+    background-color: rgb(96, 0, 0);
+}
+div.item[data-item="Crafting Table"] {
+    background-color: rgb(224, 0, 0);
+}
+div.item[data-item="Stone"] {
+    background-color: rgb(64, 64, 64);
+}
+.dropdown-mouse {
+    position: absolute;
+    display: none;
+}
+.dropdown-mouse ul {
+    display: block;
+    position: static;
+    margin-bottom: 5px;
+}
+a {
+    cursor: pointer;
+}
