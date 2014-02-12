@@ -4,22 +4,26 @@
         <title>CrafTable</title>
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="main.css"/>
+        <link rel="stylesheet" type="text/css" href="content.css"/>
     </head>
     <body>
         <div class="container">
             <div class="row">
-                <div id="crafting" class="col-sm-4">
+                <div id="crafting" class="col-lg-3 col-md-4 col-sm-5">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Hands <span class="caret"></span></button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Hands</a></li>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span id="menu-select">Hands</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul id="menu-opts" class="dropdown-menu" role="menu">
+                                    <li><a>Hands</a></li>
                                 </ul>
                             </div>
                         </div>
                         <div class="panel-body">
-                            <div id="craftInput">
+                            <div id="craft-input">
                                 <div class="row">
                                     <div class="slot img-thumbnail"></div>
                                     <div class="slot img-thumbnail"></div>
@@ -30,78 +34,67 @@
                                 </div>
                             </div>
                             <div class="arrowDown"></div>
-                            <div id="craftOutput" class="slot img-thumbnail"></div>
+                            <div id="craft-output" class="slot img-thumbnail"></div>
                         </div>
                     </div>
                 </div>
-                <div id="inventory" class="col-sm-8">
+                <div id="inventory" class="col-lg-9 col-md-8 col-sm-7">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">Inventory</h3>
                         </div>
-                        <div class="panel-body">
+                        <div id="inventory-grid" class="panel-body">
                             <div class="row">
-                                <div class="slot img-thumbnail">
-                                    <div class="item" data-item="Wood" data-stack="10"></div>
+                                <div class="inv-row inv-row-left col-lg-6">
+                                    <div class="slot img-thumbnail">
+                                        <div class="item" data-item="Wood" data-stack="50"></div>
+                                    </div>
+                                    <div class="slot img-thumbnail">
+                                        <div class="item" data-item="Stone" data-stack="5"></div>
+                                    </div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
                                 </div>
-                                <div class="slot img-thumbnail">
-                                    <div class="item" data-item="Stone" data-stack="5"></div>
+                                <div class="inv-row inv-row-right col-lg-6">
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
                                 </div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="world" class="col-sm-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">World</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
                             </div>
                             <div class="row">
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
+                                <div class="inv-row inv-row-left col-lg-6">
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                </div>
+                                <div class="inv-row inv-row-right col-lg-6">
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                            </div>
-                            <div class="row">
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
-                                <div class="slot img-thumbnail"></div>
+                                <div class="inv-row inv-row-left col-lg-6">
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                </div>
+                                <div class="inv-row inv-row-right col-lg-6">
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                    <div class="slot img-thumbnail"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -111,14 +104,7 @@
         <div id="pickup" class="dropdown dropdown-mouse clearfix">
             <ul class="dropdown-menu" role="menu">
                 <li>
-                    <a id="pickupText" tabindex="-1"></a>
-                </li>
-            </ul>
-        </div>
-        <div id="rightClick" class="dropdown dropdown-mouse clearfix">
-            <ul class="dropdown-menu" role="menu">
-                <li>
-                    <a tabindex="-1">Throw away</a>
+                    <a id="pickup-text" tabindex="-1"></a>
                 </li>
             </ul>
         </div>

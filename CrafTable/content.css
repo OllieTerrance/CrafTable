@@ -1,0 +1,12 @@
+div.item[data-item="Wood"] {
+    background-color: rgb(96, 0, 0);
+}
+div.item[data-item="Stone"] {
+    background-color: rgb(64, 64, 64);
+}
+div.item[data-item="Crafting Table"] {
+    background-color: rgb(224, 0, 0);
+}
+div.item[data-item="Wooden Pickaxe"] {
+    background-color: rgb(128, 32, 0);
+}

@@ -1,7 +1,8 @@
 $(document).ready(function(e) {
     add(Items, ["Wood", types.material]);
     add(Items, ["Stone", types.material]);
-    add(Items, ["Crafting Table", types.crafting]);
+    add(Items, ["Crafting Table", types.crafting, {size: [3, 3]}]);
+    console.log(Items);
     add(Items, ["Wooden Pickaxe", types.material]);
     add(Recipes, [["Wood", "Wood",
                    "Wood", "Wood"],

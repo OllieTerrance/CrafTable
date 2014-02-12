@@ -1,5 +1,25 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 .row {
     text-align: center;
+}
+.inv-row {
+    padding: 0;
+}
+@media (min-width: 1200px) {
+    .inv-row.inv-row-left {
+        text-align: right;
+        padding-right: 2px;
+    }
+    .inv-row.inv-row-right {
+        text-align: left;
+        padding-left: 2px;
+    }
+}
+#menu-table {
+    display: none;
 }
 .panel-footer {
     text-align: right;
@@ -31,15 +51,6 @@ div.arrowDown {
     width: 62px;
     height: 62px;
     background-image: url("down.png");
-}
-div.item[data-item="Wood"] {
-    background-color: rgb(96, 0, 0);
-}
-div.item[data-item="Crafting Table"] {
-    background-color: rgb(224, 0, 0);
-}
-div.item[data-item="Stone"] {
-    background-color: rgb(64, 64, 64);
 }
 .dropdown-mouse {
     position: absolute;

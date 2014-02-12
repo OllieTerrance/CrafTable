@@ -41,12 +41,12 @@ function add(collection, args) {
 }
 $(document).ready(function docReady(e) {
     var pickupItem;
-    function initEvents($items) {
+    function initItemEvents($items) {
         $items.on("mouseup", function itemMouseDown(e) {
             if (e.which === 1) {
                 var parent = $(e.target).parent();
-                var isIn = parent.is($("#craftInput div.slot"));
-                var isOut = parent.is($("#craftOutput.slot"));
+                var isIn = parent.is($("#craft-input div.slot"));
+                var isOut = parent.is($("#craft-output.slot"));
                 // left-click on item, already holding items of same type
                 // => drop all, combine stacks
                 if (pickupItem && $(this).attr("data-item") === pickupItem.item && !isOut) {
@@ -68,7 +68,7 @@ $(document).ready(function docReady(e) {
                     if (pickupItem.stack > 1) {
                         text += " (" + pickupItem.stack + ")";
                     }
-                    $("#pickupText").html(text);
+                    $("#pickup-text").text(text);
                     $(this).tooltip("show");
                     if (isIn) {
                         checkCraftInput();
@@ -79,20 +79,19 @@ $(document).ready(function docReady(e) {
                 else if (!pickupItem) {
                     pickupItem = {
                         item: $(this).attr("data-item"),
-                        stack: parseInt($(this).attr("data-stack"))
+                        stack: isOut ? doCraft(true) : parseInt($(this).attr("data-stack"))
                     };
                     parent.empty();
                     var text = pickupItem.item;
                     if (pickupItem.stack > 1) {
                         text += " (" + pickupItem.stack + ")";
                     }
-                    $("#pickupText").html(text);
+                    $("#pickup-text").text(text);
                     $("#pickup").show();
                     if (isIn) {
                         checkCraftInput();
-                    } else if (isOut) {
-                        postCraft();
                     }
+                    checkTables();
                 }
                 e.stopPropagation();
                 e.preventDefault();
@@ -102,19 +101,19 @@ $(document).ready(function docReady(e) {
             // => pick up one
             if (!pickupItem || pickupItem.item === $(this).attr("data-item")) {
                 var parent = $(e.target).parent();
-                var isIn = parent.is($("#craftInput div.slot"));
-                var isOut = parent.is($("#craftOutput.slot"));
+                var isIn = parent.is($("#craft-input div.slot"));
+                var isOut = parent.is($("#craft-output.slot"));
                 e.stopPropagation();
                 e.preventDefault();
                 if (pickupItem) {
                     pickupItem.stack++;
-                    $("#pickupText").html(pickupItem.item + " (" + pickupItem.stack + ")");
+                    $("#pickup-text").text(pickupItem.item + " (" + pickupItem.stack + ")");
                 } else {
                     pickupItem = {
                         item: $(this).attr("data-item"),
                         stack: 1
                     };
-                    $("#pickupText").html(pickupItem.item);
+                    $("#pickup-text").text(pickupItem.item);
                     $("#pickup").show();
                 }
                 var stack = parseInt($(this).attr("data-stack")) - 1;
@@ -127,8 +126,9 @@ $(document).ready(function docReady(e) {
                 if (isIn) {
                     checkCraftInput();
                 } else if (isOut) {
-                    postCraft();
+                    doCraft();
                 }
+                checkTables();
             }
         }).tooltip({
             title: function itemTooltipTitle() {
@@ -142,9 +142,98 @@ $(document).ready(function docReady(e) {
             placement: "bottom"
         });
     }
+    function initSlotEvents($slots) {
+        $slots.on("mouseup", function slotMouseUp(e) {
+            var isIn = $(this).is($("#craft-input div.slot"));
+            var isOut = $(this).is($("#craft-output.slot"));
+            // left-click on empty slot, holding items
+            // => drop all items in slot
+            if (e.which === 1 && $(this).children().length === 0 && pickupItem && !isOut) {
+                e.preventDefault();
+                var item = $("<div/>").addClass("item").attr("data-item", pickupItem.item).attr("data-stack", pickupItem.stack);
+                pickupItem = null;
+                $("#pickup").hide();
+                $(this).append(item);
+                initItemEvents(item);
+                if (isIn) {
+                    checkCraftInput();
+                }
+                checkTables();
+            }
+        }).on("contextmenu", function slotContentMenu(e) {
+            var isIn = $(this).is($("#craft-input div.slot"));
+            var isOut = $(this).is($("#craft-output.slot"));
+            // right-click on empty slot, holding items
+            // => drop one item in slot
+            if ($(this).children().length === 0 && pickupItem && !isOut) {
+                var item = $("<div/>").addClass("item").attr("data-item", pickupItem.item).attr("data-stack", 1);
+                pickupItem.stack--;
+                if (pickupItem.stack) {
+                    var text = pickupItem.item;
+                    if (pickupItem.stack > 1) {
+                        text += " (" + pickupItem.stack + ")";
+                    }
+                    $("#pickup-text").text(text);
+                } else {
+                    pickupItem = null;
+                    $("#pickup").hide();
+                }
+                $(this).append(item);
+                initItemEvents(item);
+                if (isIn) {
+                    checkCraftInput();
+                }
+                checkTables();
+            }
+        });
+    }
+    function initMenuEvents() {
+        $("#menu-opts a").on("click", function menuClick(e) {
+            var item = $(this).text();
+            $("#menu-select").text(item);
+            var size = item === "Hands" ? [2, 2] : Items[item].size;
+            var grid = $("<div id='craft-input'/>");
+            for (var i = 0; i < size[0]; i++) {
+                var row = $("<div class='row'/>");
+                for (var j = 0; j < size[1]; j++) {
+                    row.append("<div class='slot img-thumbnail'/>");
+                }
+                grid.append(row);
+            }
+            $("#craft-input").replaceWith(grid);
+            initSlotEvents($("#craft-input div.slot"));
+        });
+    }
+    function checkTables() {
+        var tables = {"Hands": true};
+        for (var item in Items) {
+            if (Items[item].type === types.crafting) {
+                tables[item] = false;
+            }
+        }
+        $("#inventory-grid div.slot").each(function(index, slot) {
+            if ($(slot).children().length) {
+                var item = $($(slot).children()[0]).attr("data-item");
+                for (var table in tables) {
+                    if (item === table) {
+                        tables[table] = true;
+                        break;
+                    }
+                }
+            }
+        });
+        var menu = $("<ul id='menu-opts' class='dropdown-menu' role='menu'/>");
+        for (var table in tables) {
+            if (tables[table]) {
+                menu.append("<li><a>" + table + "</a></li>");
+            }
+        }
+        $("#menu-opts").replaceWith(menu);
+        initMenuEvents();
+    }
     function checkCraftInput() {
         var recipe = [];
-        $("#craftInput div.slot").each(function(index, slot) {
+        $("#craft-input div.slot").each(function(index, slot) {
             if ($(slot).children().length) {
                 recipe.push($($(slot).children()[0]).attr("data-item"));
             } else {
@@ -152,31 +241,45 @@ $(document).ready(function docReady(e) {
             }
         });
         var recipeStr = recipe.join("|");
-        $("#craftOutput").empty();
+        $("#craft-output").empty();
         for (var item in Recipes) {
             if (typeof Recipes[item] === "object") {
                 for (var i in Recipes[item]) {
                     if (Recipes[item][i].input.join("|") === recipeStr) {
                         var item = $("<div/>").addClass("item").attr("data-item", item).attr("data-stack", 1);
-                        $("#craftOutput").append(item);
-                        initEvents(item);
+                        $("#craft-output").append(item);
+                        initItemEvents(item);
                         break;
                     }
                 }
             }
         }
     }
-    function postCraft() {
-        $("#craftInput div.slot").each(function(index, slot) {
+    function doCraft(multi, count) {
+        if (!count) {
+            count = 1;
+        }
+        var emptied = false;
+        $("#craft-input div.slot").each(function(index, slot) {
             if ($(slot).children().length) {
                 var item = $($(slot).children()[0]);
                 item.attr("data-stack", parseInt(item.attr("data-stack")) - 1);
                 if (parseInt(item.attr("data-stack")) === 0) {
                     $(slot).empty();
+                    emptied = true;
                 }
             }
         });
-        checkCraftInput();
+        if (multi) {
+            if (emptied) {
+                checkCraftInput();
+                return count;
+            } else {
+                return doCraft(true, count + 1);
+            }
+        } else {
+            checkCraftInput();
+        }
     }
     $(document).on("mousemove", function docMouseMove(e) {
         if (pickupItem) {
@@ -187,48 +290,7 @@ $(document).ready(function docReady(e) {
         }
     }).on("contextmenu", function docContextMenu(e) {
         e.preventDefault();
-    });
-    $("div.slot").on("mouseup", function slotMouseUp(e) {
-        var isIn = $(this).is($("#craftInput div.slot"));
-        var isOut = $(this).is($("#craftOutput.slot"));
-        // left-click on empty slot, holding items
-        // => drop all items in slot
-        if (e.which === 1 && $(this).children().length === 0 && pickupItem && !isOut) {
-            e.preventDefault();
-            var item = $("<div/>").addClass("item").attr("data-item", pickupItem.item).attr("data-stack", pickupItem.stack);
-            pickupItem = null;
-            $("#pickup").hide();
-            $(this).append(item);
-            initEvents(item);
-            if (isIn) {
-                checkCraftInput();
-            }
-        }
-    });
-    $("div.slot").on("contextmenu", function slotContentMenu(e) {
-        var isIn = $(this).is($("#craftInput div.slot"));
-        var isOut = $(this).is($("#craftOutput.slot"));
-        // right-click on empty slot, holding items
-        // => drop one item in slot
-        if ($(this).children().length === 0 && pickupItem && !isOut) {
-            var item = $("<div/>").addClass("item").attr("data-item", pickupItem.item).attr("data-stack", 1);
-            pickupItem.stack--;
-            if (pickupItem.stack) {
-                var text = pickupItem.item;
-                if (pickupItem.stack > 1) {
-                    text += " (" + pickupItem.stack + ")";
-                }
-                $("#pickupText").html(text);
-            } else {
-                pickupItem = null;
-                $("#pickup").hide();
-            }
-            $(this).append(item);
-            initEvents(item);
-            if (isIn) {
-                checkCraftInput();
-            }
-        }
-    });
-    initEvents($("div.item"));
+    });    
+    initItemEvents($("div.item"));
+    initSlotEvents($("div.slot"));
 });
