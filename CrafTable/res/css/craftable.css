@@ -50,7 +50,7 @@ div.arrowDown {
     margin: 3px auto 5px;
     width: 62px;
     height: 62px;
-    background-image: url("down.png");
+    background-image: url(../img/down.png);
 }
 .dropdown-mouse {
     position: absolute;
